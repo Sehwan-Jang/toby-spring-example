@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserDaoTest {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        UserDao dao = new UserDao(new SimpleConnectionMaker());
+        UserDao dao = new DaoFactory().userDao();
 
         User user = new User();
         user.setId("aaron");
