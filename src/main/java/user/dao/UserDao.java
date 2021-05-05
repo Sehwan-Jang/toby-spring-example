@@ -1,5 +1,6 @@
 package user.dao;
 
+import user.dao.connectionMaker.ConnectionMaker;
 import user.domain.User;
 
 import java.sql.*;

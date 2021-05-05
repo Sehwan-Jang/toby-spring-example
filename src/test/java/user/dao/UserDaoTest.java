@@ -1,6 +1,7 @@
 package user.dao;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.assertj.ApplicationContextAssert;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -8,9 +9,10 @@ import user.domain.User;
 
 import java.sql.SQLException;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserDaoTest {
+public class UserDaoTest {
 
 
     @BeforeEach
@@ -40,4 +42,14 @@ class UserDaoTest {
         System.out.println(user2.getId() + " 조회 성공");
     }
 
+    @Test
+    void beanTest() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        UserDao dao1 = context.getBean("userDao", UserDao.class);
+        UserDao dao2 = context.getBean("userDao", UserDao.class);
+
+        System.out.println(dao1 == dao2);
+        System.out.println(dao1.equals(dao2));
+        assertThat(dao1==dao2).isTrue();
+    }
 }
