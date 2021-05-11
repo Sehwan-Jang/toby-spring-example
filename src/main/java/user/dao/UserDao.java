@@ -3,17 +3,19 @@ package user.dao;
 import user.dao.connectionMaker.ConnectionMaker;
 import user.domain.User;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 public class UserDao {
-    private final ConnectionMaker simpleConnectionMaker;
+    private DataSource dataSource;
 
-    public UserDao(ConnectionMaker connectionMaker) {
-        this.simpleConnectionMaker = connectionMaker;
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
+
     public void add(User user) throws SQLException, ClassNotFoundException {
-        Connection c = simpleConnectionMaker.makeConnection();
+        Connection c = getConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "insert into users(id, name, password) values(?, ?, ?)");
@@ -28,7 +30,7 @@ public class UserDao {
     }
 
     public void delete(User user) throws SQLException, ClassNotFoundException {
-        Connection c = simpleConnectionMaker.makeConnection();
+        Connection c = getConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "delete from users where id = ?");
@@ -41,7 +43,7 @@ public class UserDao {
     }
 
     public User get(String id) throws SQLException, ClassNotFoundException {
-        Connection c = simpleConnectionMaker.makeConnection();
+        Connection c = getConnection();
 
         PreparedStatement ps = c.prepareStatement(
                 "select * from users where id =?");
@@ -59,5 +61,10 @@ public class UserDao {
         c.close();
 
         return user;
+    }
+
+    private Connection getConnection() throws SQLException {
+        Connection c = dataSource.getConnection();
+        return c;
     }
 }
