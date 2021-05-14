@@ -23,22 +23,46 @@ public class UserDaoTest {
 //        UserDao dao2 = new DaoFactory().userDao();
         UserDao dao = context.getBean("userDao", UserDao.class);
 
-        User user = new User();
-        user.setId("aaron");
-        user.setName("장세환");
-        user.setPassword("solo");
+        User user = new User("aaron", "장세환", "springno1");
+        User user2 = new User("woogi", "박병욱", "springno2");
 
-        dao.delete(user);
+        dao.deleteAll();
 
         assertThat(dao.getCount()).isEqualTo(0);
 
         dao.add(user);
+        dao.add(user2);
+        assertThat(dao.getCount()).isEqualTo(2);
 
-        User user2 = dao.get(user.getId());
+        User userget1 = dao.get(user.getId());
+        assertThat(user.getName()).isEqualTo(userget1.getName());
+        assertThat(user.getPassword()).isEqualTo(userget1.getPassword());
 
-        assertThat(user.getName()).isEqualTo(user2.getName());
-        assertThat(user.getPassword()).isEqualTo(user2.getPassword());
+        User userget2 = dao.get(user2.getId());
+        assertThat(user2.getName()).isEqualTo(userget2.getName());
+        assertThat(user2.getPassword()).isEqualTo(userget2.getPassword());
+    }
+
+    @Test
+    void count() throws SQLException, ClassNotFoundException {
+        //given
+        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+
+        UserDao dao = context.getBean("userDao", UserDao.class);
+        User user1 = new User("aaron", "장세환", "no1");
+        User user2 = new User("woogi", "박병욱", "no2");
+        User user3 = new User("papi", "김태완", "no3");
+        //when then
+        dao.deleteAll();
+        assertThat(dao.getCount()).isEqualTo(0);
+
+        dao.add(user1);
         assertThat(dao.getCount()).isEqualTo(1);
+        dao.add(user2);
+        assertThat(dao.getCount()).isEqualTo(2);
+        dao.add(user3);
+        assertThat(dao.getCount()).isEqualTo(3);
+
     }
 
     @Test
