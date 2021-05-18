@@ -3,6 +3,7 @@ package user.dao;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import user.domain.User;
 
 import javax.sql.DataSource;
 
@@ -17,7 +18,7 @@ public class DaoFactory {
     public DataSource dataSource() {
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
 
-        dataSource.setDriverClass(com.mysql.cj.jdbc.Driver.class);
+        dataSource.setDriverClass(com.mysql.jdbc.Driver.class);
         dataSource.setUrl("jdbc:mysql://localhost:13306/toby?serverTimezone=UTC&characterEncoding=UTF-8");
         dataSource.setUsername("root");
         dataSource.setPassword("root");
