@@ -1,5 +1,8 @@
 package user.dao;
 
+import user.dao.strategy.AddStatement;
+import user.dao.strategy.DeleteAllStatement;
+import user.dao.strategy.StatementStrategy;
 import user.domain.User;
 
 import javax.sql.DataSource;
@@ -16,40 +19,23 @@ public class UserDao {
     }
 
 
-    public void add(User user) throws SQLException, ClassNotFoundException {
-        Connection c = getConnection();
-
-        PreparedStatement ps = c.prepareStatement(
-                "insert into users(id, name, password) values(?, ?, ?)");
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
-
-        ps.executeUpdate();
-
-        ps.close();
-        c.close();
+    public void add(User user) throws SQLException{
+        StatementStrategy st = new AddStatement(user);
+        jdbcContextWithStatementStrategy(st);
     }
 
-    public void delete(User user) throws SQLException, ClassNotFoundException {
-        Connection c = getConnection();
-
-        PreparedStatement ps = c.prepareStatement(
-                "delete from users where id = ?");
-        ps.setString(1, user.getId());
-
-        ps.executeUpdate();
-
-        ps.close();
-        c.close();
+    public void deleteAll() throws SQLException {
+        StatementStrategy st = new DeleteAllStatement();
+        jdbcContextWithStatementStrategy(st);
     }
 
-    public void deleteAll() throws SQLException, ClassNotFoundException {
+    private void jdbcContextWithStatementStrategy(StatementStrategy st) throws SQLException {
         Connection c = null;
         PreparedStatement ps = null;
+
         try {
             c = getConnection();
-            ps = c.prepareStatement("delete from users");
+            ps = st.makePreparedStatement(c);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw e;
