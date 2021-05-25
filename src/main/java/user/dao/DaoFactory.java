@@ -3,6 +3,7 @@ package user.dao;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
+import user.dao.context.JdbcContext;
 import user.domain.User;
 
 import javax.sql.DataSource;
@@ -27,9 +28,14 @@ public class DaoFactory {
     }
 
     @Bean
+    public JdbcContext jdbcContext() {
+        return new JdbcContext(dataSource());
+    }
+
+    @Bean
     public UserDao userDao() {
         UserDao userDao = new UserDao();
-        userDao.setDataSource(dataSource());
+        userDao.setDataSource(dataSource(), jdbcContext());
         return userDao;
     }
 }
