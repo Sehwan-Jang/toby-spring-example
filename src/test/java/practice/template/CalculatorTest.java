@@ -29,4 +29,9 @@ class CalculatorTest {
     void time() throws IOException {
         assertThat(calculator.calcTimes(path)).isEqualTo(24);
     }
+
+    @Test
+    void concat() throws IOException {
+        assertThat(calculator.concatenate(path)).isEqualTo("1234");
+    }
 }
