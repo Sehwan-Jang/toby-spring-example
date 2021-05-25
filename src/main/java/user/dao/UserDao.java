@@ -1,11 +1,9 @@
 package user.dao;
 
 import user.dao.context.JdbcContext;
-import user.dao.strategy.StatementStrategy;
 import user.domain.User;
 
 import javax.sql.DataSource;
-import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,7 +31,7 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        this.jdbcContext.workWithStatementStrategy(connection -> connection.prepareStatement("delete from users"));
+        this.jdbcContext.executeSql("delete from users");
     }
 
     public User get(String id) throws SQLException, ClassNotFoundException {
