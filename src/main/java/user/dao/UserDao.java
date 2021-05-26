@@ -1,5 +1,7 @@
 package user.dao;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import user.dao.context.JdbcContext;
 import user.domain.User;
 
@@ -12,10 +14,12 @@ import java.sql.SQLException;
 public class UserDao {
     private DataSource dataSource;
     private JdbcContext jdbcContext;
+    private JdbcTemplate jdbcTemplate;
 
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
         this.jdbcContext = new JdbcContext(dataSource);
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
 
@@ -31,7 +35,12 @@ public class UserDao {
     }
 
     public void deleteAll() throws SQLException {
-        this.jdbcContext.executeSql("delete from users");
+        this.jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                return con.prepareStatement("delete from users");
+            }
+        });
     }
 
     public User get(String id) throws SQLException, ClassNotFoundException {
