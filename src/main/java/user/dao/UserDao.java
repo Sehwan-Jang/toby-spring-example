@@ -4,6 +4,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.RowMapper;
 import user.dao.context.JdbcContext;
 import user.domain.User;
 
@@ -35,45 +36,24 @@ public class UserDao {
     }
 
     public User get(String id) throws SQLException, ClassNotFoundException {
-        Connection c = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            c = getConnection();
-            ps = c.prepareStatement("select * from users where id =?");
-            ps.setString(1, id);
-
-            rs = ps.executeQuery();
-            rs.next();
-
-            User user = new User();
-            user.setId(rs.getString("id"));
-            user.setName(rs.getString("name"));
-            user.setPassword(rs.getString("password"));
-            return user;
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                }
-            }
-            if (c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                }
-            }
-        }
+        return this.jdbcTemplate.queryForObject("select * from users where id =?",
+                new Object[] {id},
+                new RowMapper<User>() {
+                    @Override
+                    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        User user = new User();
+                        user.setId(rs.getString("id"));
+                        user.setName(rs.getString("name"));
+                        user.setPassword(rs.getString("password"));
+                        return user;
+                    }
+                });
+//        return this.jdbcTemplate.queryForObject("select * from users where id =?",
+//                 (rs, rowNum) -> new User(
+//                         rs.getString("id"),
+//                         rs.getString("name"),
+//                         rs.getString("password")
+//                 ), id);
     }
 
 
