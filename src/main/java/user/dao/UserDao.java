@@ -13,6 +13,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserDao {
     private DataSource dataSource;
@@ -37,23 +39,11 @@ public class UserDao {
 
     public User get(String id) throws SQLException, ClassNotFoundException {
         return this.jdbcTemplate.queryForObject("select * from users where id =?",
-                new Object[] {id},
-                new RowMapper<User>() {
-                    @Override
-                    public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        User user = new User();
-                        user.setId(rs.getString("id"));
-                        user.setName(rs.getString("name"));
-                        user.setPassword(rs.getString("password"));
-                        return user;
-                    }
-                });
-//        return this.jdbcTemplate.queryForObject("select * from users where id =?",
-//                 (rs, rowNum) -> new User(
-//                         rs.getString("id"),
-//                         rs.getString("name"),
-//                         rs.getString("password")
-//                 ), id);
+                 (rs, rowNum) -> new User(
+                         rs.getString("id"),
+                         rs.getString("name"),
+                         rs.getString("password")
+                 ), id);
     }
 
 
@@ -63,5 +53,9 @@ public class UserDao {
 
     private Connection getConnection() throws SQLException {
         return dataSource.getConnection();
+    }
+
+    public List<User> getAll() {
+        return new ArrayList<>();
     }
 }
