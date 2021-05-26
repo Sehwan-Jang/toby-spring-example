@@ -18,9 +18,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ContextConfiguration(classes = {DaoFactory.class})
 public class UserDaoTest {
 
-    User user1 = new User("aaron", "장세환", "no1");
-    User user2 = new User("woogi", "박병욱", "no2");
-    User user3 = new User("papi", "김태완", "no3");
+    User user1 = new User("1", "장세환", "no1");
+    User user2 = new User("2", "박병욱", "no2");
+    User user3 = new User("3", "김태완", "no3");
 
     @Autowired
     private ApplicationContext context;
@@ -65,8 +65,10 @@ public class UserDaoTest {
     }
 
     @Test
-    void name() {
+    void getAll() {
         dao.deleteAll();
+
+        assertThat(dao.getAll()).hasSize(0);
 
         dao.add(user1);
         List<User> users1 = dao.getAll();
@@ -76,12 +78,12 @@ public class UserDaoTest {
         dao.add(user2);
         List<User> users2 = dao.getAll();
         assertThat(users2.size()).isEqualTo(2);
-        checkSameUser(user2, users1.get(1));
+        checkSameUser(user2, users2.get(1));
 
         dao.add(user3);
         List<User> users3 = dao.getAll();
         assertThat(users3.size()).isEqualTo(3);
-        checkSameUser(user3, users1.get(2));
+        checkSameUser(user3, users3.get(2));
     }
 
     private void checkSameUser(User user1, User user) {
