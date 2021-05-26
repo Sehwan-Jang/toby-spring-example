@@ -23,24 +23,13 @@ public class UserDao {
     }
 
 
-    public void add(User user) throws SQLException{
-        this.jdbcContext.workWithStatementStrategy(connection -> {
-            PreparedStatement ps =  connection.prepareStatement(
-                    "insert into users(id, name, password) values(?, ?, ?)");
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
-            return ps;
-        });
+    public void add(User user) {
+        this.jdbcTemplate.update("insert into users(id, name, password) values(?, ?, ?)",
+                user.getId(), user.getName(), user.getPassword());
     }
 
-    public void deleteAll() throws SQLException {
-        this.jdbcTemplate.update(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                return con.prepareStatement("delete from users");
-            }
-        });
+    public void deleteAll() {
+        this.jdbcTemplate.update("delete from users");
     }
 
     public User get(String id) throws SQLException, ClassNotFoundException {
