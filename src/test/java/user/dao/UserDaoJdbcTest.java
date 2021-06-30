@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DaoFactory.class})
-public class UserDaoTest {
+public class UserDaoJdbcTest {
 
     User user1 = new User("1", "장세환", "no1");
     User user2 = new User("2", "박병욱", "no2");
@@ -24,11 +24,11 @@ public class UserDaoTest {
 
     @Autowired
     private ApplicationContext context;
-    private UserDao dao;
+    private UserDaoJdbc dao;
 
     @BeforeEach
     void setUp() {
-        this.dao = this.context.getBean("userDao", UserDao.class);
+        this.dao = this.context.getBean("userDao", UserDaoJdbc.class);
     }
 
     @Test
@@ -94,7 +94,7 @@ public class UserDaoTest {
 
     @Test
     void beanTest() {
-        UserDao dao2 = context.getBean("userDao", UserDao.class);
+        UserDaoJdbc dao2 = context.getBean("userDao", UserDaoJdbc.class);
 
         System.out.println(dao == dao2);
         System.out.println(dao.equals(dao2));

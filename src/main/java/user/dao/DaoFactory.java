@@ -28,9 +28,9 @@ public class DaoFactory {
     }
 
     @Bean
-    public UserDao userDao() {
-        UserDao userDao = new UserDao();
-        userDao.setDataSource(jdbcTemplate());
-        return userDao;
+    public UserDaoJdbc userDao() {
+        UserDaoJdbc userDaoJdbc = new UserDaoJdbc();
+        userDaoJdbc.setDataSource(jdbcTemplate());
+        return userDaoJdbc;
     }
 }
