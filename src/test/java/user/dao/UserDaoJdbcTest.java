@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import user.domain.User;
@@ -13,6 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {DaoFactory.class})
@@ -24,7 +27,7 @@ public class UserDaoJdbcTest {
 
     @Autowired
     private ApplicationContext context;
-    private UserDaoJdbc dao;
+    private UserDao dao;
 
     @BeforeEach
     void setUp() {
@@ -90,6 +93,15 @@ public class UserDaoJdbcTest {
         assertThat(user1.getId()).isEqualTo(user.getId());
         assertThat(user1.getName()).isEqualTo(user.getName());
         assertThat(user1.getPassword()).isEqualTo(user.getPassword());
+    }
+
+    @Test
+    void duplicateError() {
+        dao.deleteAll();
+
+        dao.add(user1);
+        assertThatThrownBy(() -> dao.add(user1))
+                .isInstanceOf(DataAccessException.class);
     }
 
     @Test
